@@ -1,6 +1,15 @@
+class CoffeeError < StandardError 
+end
+
 # PHASE 2
 def convert_to_int(str)
-  Integer(str)
+  begin 
+    Integer(str)
+  rescue ArgumentError => error 
+    puts "Your input is not an integer, please try again"
+    puts error.class 
+    return nil 
+  end 
 end
 
 # PHASE 3
@@ -9,6 +18,8 @@ FRUITS = ["apple", "banana", "orange"]
 def reaction(maybe_fruit)
   if FRUITS.include? maybe_fruit
     puts "OMG, thanks so much for the #{maybe_fruit}!"
+  elsif maybe_fruit.downcase == "coffee"
+    raise CoffeeError
   else 
     raise StandardError 
   end 
@@ -18,13 +29,30 @@ def feed_me_a_fruit
   puts "Hello, I am a friendly monster. :)"
 
   puts "Feed me a fruit! (Enter the name of a fruit:)"
-  maybe_fruit = gets.chomp
-  reaction(maybe_fruit) 
+  
+  begin
+    maybe_fruit = gets.chomp
+    reaction(maybe_fruit) 
+  rescue StandardError => error
+    puts error.message
+    if error.is_a?(CoffeeError)
+      retry
+    end
+  end
 end  
 
 # PHASE 4
 class BestFriend
   def initialize(name, yrs_known, fav_pastime)
+    begin
+      if name.length <= 0 
+        raise "How can you not remember my name!"
+      elsif yrs_known < 5 
+        raise "Friendships, like a fine wine, need at least five years to mature."
+      elsif fav_pastime.length <= 0
+        raise "How can you not remember our fav pastime! :( "
+      end 
+    end 
     @name = name
     @yrs_known = yrs_known
     @fav_pastime = fav_pastime
